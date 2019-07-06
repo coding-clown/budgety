@@ -1,5 +1,8 @@
  //BUDGET CONTROLLER
- var budgetController= (function(){
+
+ 
+var budgetController= (function(){
+
 
   var Expenses=function(id,description,value){
     this.id=id;
