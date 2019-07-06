@@ -11,15 +11,28 @@ var budgetController= (function(){
     this.description=description;
     this.value=value;
   };
+  var calculatetotal=function(type){
+    var sum=0;
+    
+    for(var i=0;i<(data.allitems[type].length);i++){
+      sum=sum+data.allitems[type][i].value;
+      
+    };
+
+    data.totals[type]=sum;
+    
+    }
   var data={
     allitems:{ 
       inc:[],
       exp:[]
     },
     totals:{
-      incTot:0,
-      expTot:0
-    }
+      inc:0,
+      exp:0
+    },
+    budget:0,
+    percentage:0
   }
   return{
     addItem: function(type,des,val){
@@ -43,6 +56,19 @@ var budgetController= (function(){
       return newItem;
 
     },
+    calculateBudget:function(){
+      calculatetotal('inc');
+      calculatetotal('exp');
+      data.budget= (data.totals.inc )- (data.totals.exp);
+      data.percentage=Math.round((data.totals.inc )/(data.totals.exp)*100)
+
+    },
+    getBudget:{
+      budget_f:data.budget,
+      percentage_f:data.percentage,
+      income_f:data.totals.inc,
+      expenses_f:data.totals.exp
+    },
     testing:data
   };
 
@@ -59,7 +85,9 @@ var UIController= (function(){
       inputNum:".add__value",
       inputBtn:".add__btn",
       incomes:".income__list",
-      expenses:".expenses__list"
+      expenses:".expenses__list",
+      totIncome:".budget__income--value",
+      totExp:".budget__expenses--value"
     }
 
    return {
@@ -67,9 +95,12 @@ var UIController= (function(){
           return{
             type:document.querySelector(DomStrings.inputType).value,
             description:document.querySelector(DomStrings.inputDes).value,
-            number:document.querySelector(DomStrings.inputNum).value
+            number:parseFloat(document.querySelector(DomStrings.inputNum).value)
           };
        
+        },
+        updateUI:function(){
+          document.querySelector(DomStrings.totIncome).innerHTML=budgetController.getBudget.income_f;
         },
         getDomStrings:function(){
           return DomStrings;
@@ -123,14 +154,23 @@ var controller=(function(budgetctrl,UIctrl){
       }
     });
     } 
+    var updateBudget=function(){
+        budgetController.calculateBudget();
+    };
     var ctrlAdditem= function(){
           var input,newItem;
+          UIctrl.updateUI();
           input=UIctrl.getInput();
-          //creating new item
-          newItem = budgetctrl.addItem(input.type,input.description,input.number);
-          //adding that new item yto uI
-          UIctrl.addListItem(newItem,input.type);
-          UIctrl.clearfields();
+          if (input.description !== "" && !isNaN(input.number) && input.number > 0){
+            //creating new itemc
+            newItem = budgetctrl.addItem(input.type,input.description,input.number);
+            //adding that new item yto uI
+            UIctrl.addListItem(newItem,input.type);
+            UIctrl.clearfields();
+            updateBudget();
+          }
+          
+         
           
     }
     
@@ -142,5 +182,6 @@ var controller=(function(budgetctrl,UIctrl){
     
 
 })(budgetController,UIController);
+
 controller.init();                    //initialization function
   
