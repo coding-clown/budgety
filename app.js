@@ -61,16 +61,16 @@ var budgetController= (function(){
     },
     deleteItem:function(type,id){
       var index;
-      var ids=data.all[type].map(function(current){
+      var ids=data.allitems[type].map(function(current){
         return current.id;
       });
 
-      index= ids.index(id);
+      index= ids.indexOf(id);
       if(index!==-1){
         data.allitems[type].splice(index,1);
       }
 
-    }
+    },
     calculateBudget:function(){
       calculatetotal('inc');
       calculatetotal('exp');
@@ -159,6 +159,10 @@ var UIController= (function(){
           // Insert the HTML into the DOM
           document.querySelector(element).insertAdjacentHTML('beforeend', newHtml);
       },
+      deleteListItem: function(selectorID){
+        var el=document.getElementById(selectorID);
+        el.parentNode.removeChild(el);
+      },
       clearfields:function(){
         var fields;
        fields= document.querySelectorAll(DomStrings.inputDes+','+DomStrings.inputNum);
@@ -210,17 +214,17 @@ var controller=(function(budgetctrl,UIctrl){
     }
     var  ctrlDeleteItem= function(event){
       var itemID,sliceID,type,ID;
-      itemID=(event.target.parentNode.parentNode.parentNode.parentNode);
+      itemID=(event.target.parentNode.parentNode.parentNode.parentNode.id);
        if(itemID){
-        sliceID=itemID.slice('-');
+        sliceID=itemID.split('-');
          type=sliceID[0];
-         ID=sliceID[1];
+         ID=parseInt(sliceID[1]);
         //delete  the item from data structure
-
+        budgetctrl.deleteItem(type,ID);
         //delete the ui
-
+       UIctrl.deleteListItem(itemID);
         //update the budget
-
+        updateBudget();
 
        }
     }
@@ -241,4 +245,3 @@ var controller=(function(budgetctrl,UIctrl){
 })(budgetController,UIController);
 
 controller.init();                    //initialization function
-  
