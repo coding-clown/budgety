@@ -281,3 +281,15 @@ h2 {
 .unpaid .item__percentage { box-shadow: 0 2px 6px 0 rgba(0, 0, 0, 0.1); }
 .unpaid:hover .item__description { font-weight: 900; }
 
+.googlehover:hover
+{
+  border-color: rgb(219,68,55) rgb(9, 66, 158) rgb(244,160,0) rgb(15,157,88);
+}
+.googlehoverp
+{
+  border-radius:16px; 
+  border-width: 4px;
+  border-style:solid;
+  border-color: rgb(219,68,55) rgb(9, 66, 158) rgb(244,160,0) rgb(15,157,88); 
+}
+
